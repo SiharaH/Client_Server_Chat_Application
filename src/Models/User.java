@@ -8,12 +8,14 @@ public class User {
     protected String username;
     protected String password;
     protected String nickname;
+    private boolean isAdmin;
 
-    public User(String email, String username, String password, String nickname) {
+    public User(String email, String username, String password, String nickname, boolean isAdmin) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.nickname = nickname;
+        this.isAdmin = isAdmin;
     }
 
     public String getEmail() {
@@ -45,7 +47,7 @@ public class User {
     }
 
     public boolean isAdmin() {
-        return false;
+        return isAdmin;
     }
 
 }

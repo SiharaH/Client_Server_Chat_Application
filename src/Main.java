@@ -19,9 +19,6 @@ public class Main {
 
                 switch (choice) {
                     case "1":
-                        System.out.print("Are you registering as Admin? (Y/N): ");
-                        String isAdmin = scanner.nextLine().trim().toUpperCase();
-
                         System.out.print("Email: ");
                         String email = scanner.nextLine();
                         System.out.print("Username: ");
@@ -30,12 +27,10 @@ public class Main {
                         String password = scanner.nextLine();
                         System.out.print("Nickname: ");
                         String nickname = scanner.nextLine();
+                        System.out.print("Register as Admin? (y/n): ");
+                        boolean isAdmin = scanner.nextLine().equalsIgnoreCase("y");
 
-                        if (isAdmin.equals("Y")) {
-                            userService.registerAdmin(email, username, password, nickname);
-                        } else {
-                            userService.registerUser(email, username, password, nickname);
-                        }
+                        userService.registerUser(email, username, password, nickname, isAdmin);
                         break;
 
                     case "2":
@@ -48,13 +43,29 @@ public class Main {
                         if (loggedUser != null) {
                             System.out.println("Login successful. Welcome " + loggedUser.getNickname() + "!");
                             if (loggedUser.isAdmin()) {
-                                System.out.println("You are logged in as Admin.");
+                                while (true) {
+                                    System.out.println("\n--- Admin Dashboard ---");
+                                    System.out.println("1. View Users");
+                                    System.out.println("2. Remove User");
+                                    System.out.println("0. Logout");
+                                    System.out.print("Enter choice: ");
+                                    String adminChoice = scanner.nextLine();
 
+                                    if (adminChoice.equals("1")) {
+                                        userService.printAllUsers();
+                                    } else if (adminChoice.equals("2")) {
+                                        System.out.print("Enter email to remove: ");
+                                        String removeEmail = scanner.nextLine();
+                                        userService.removeUser(removeEmail);
+                                    } else if (adminChoice.equals("0")) {
+                                        break;
+                                    } else {
+                                        System.out.println("Invalid choice.");
+                                    }
+                                }
                             } else {
-                                System.out.println("You are logged in as User.");
+                                System.out.println("You are logged in as a User.");
                             }
-                        } else {
-                            System.out.println("Login failed. Invalid email or password.");
                         }
                         break;
 

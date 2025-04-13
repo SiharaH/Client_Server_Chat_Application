@@ -3,44 +3,75 @@ package Services;
 import Models.User;
 import Models.Admin;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserService {
-    private final List<User> users = new ArrayList<>();
+    private Map<String, User> users = new HashMap<>();
+    private User adminInstance;
 
-    public boolean registerUser(String email, String username, String password, String nickname) {
-        for (User user : users) {
-            if (user.getEmail().equals(email)) {
-                System.out.println("Email already registered.");
+    public boolean registerUser(String email, String username, String password, String nickname, boolean isAdmin) {
+        if (users.containsKey(email)) {
+            System.out.println("User already exists with this email.");
+            return false;
+        }
+
+        if (isAdmin) {
+            if (adminInstance != null) {
+                System.out.println("Admin already exists.");
                 return false;
             }
+            adminInstance = new User(email, username, password, nickname, true);
+            users.put(email, adminInstance);
+            System.out.println("Admin registered successfully.");
+            return true;
         }
-        User newUser = new User(email, username, password, nickname);
-        users.add(newUser);
+        User user = new User(email, username, password, nickname, false);
+        users.put(email, user);
         System.out.println("User registered successfully.");
         return true;
     }
 
-    public boolean registerAdmin(String email, String username, String password, String nickname) {
-        for (User user : users) {
-            if (user instanceof Admin) {
-                System.out.println("Admin already exists.");
-                return false;
-            }
+    public User login(String email, String password) {
+        if (!users.containsKey(email)) {
+            System.out.println("No user found");
+            return null;
         }
-        Admin admin = Admin.getInstance(email, username, password, nickname);
-        users.add(admin);
-        System.out.println("Admin registered successfully.");
-        return true;
+
+        User user = users.get(email);
+        if (!user.getPassword().equals(password)) {
+            System.out.println("Incorrect password.");
+            return null;
+        }
+        return user;
     }
 
-    public User login(String email, String password) {
-        for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return user;
-            }
+    public void removeUser(String email) {
+        if (!users.containsKey(email)) {
+            System.out.println("User not found.");
+            return;
         }
-        return null;
+
+        User user = users.get(email);
+        if (user.isAdmin()) {
+            System.out.println("Cannot remove the admin.");
+            return;
+        }
+
+        users.remove(email);
+        System.out.println("User removed successfully.");
+    }
+
+    public void printAllUsers() {
+        System.out.println("\n--- Registered Users ---");
+        if (users.isEmpty()) {
+            System.out.println("No users found.");
+            return;
+        }
+
+        for (User user : users.values()) {
+            String role = user.isAdmin() ? "Admin" : "User";
+            System.out.println("- " + user.getUsername() + user.getNickname() + " | " + user.getEmail() + " | " + role);
+        }
     }
 }
