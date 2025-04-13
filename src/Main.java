@@ -1,3 +1,4 @@
+import Models.Admin;
 import Models.User;
 import Services.UserService;
 
@@ -47,6 +48,7 @@ public class Main {
                                     System.out.println("\n--- Admin Dashboard ---");
                                     System.out.println("1. View Users");
                                     System.out.println("2. Remove User");
+                                    System.out.println("3. Update Profile");
                                     System.out.println("0. Logout");
                                     System.out.print("Enter choice: ");
                                     String adminChoice = scanner.nextLine();
@@ -57,7 +59,10 @@ public class Main {
                                         System.out.print("Enter email to remove: ");
                                         String removeEmail = scanner.nextLine();
                                         userService.removeUser(removeEmail);
-                                    } else if (adminChoice.equals("0")) {
+                                    }
+                                    else if (adminChoice.equals("3")){
+                                        loggedUser.updateProfile(scanner);
+                                    }else if (adminChoice.equals("0")) {
                                         break;
                                     } else {
                                         System.out.println("Invalid choice.");
@@ -65,9 +70,28 @@ public class Main {
                                 }
                             } else {
                                 System.out.println("You are logged in as a User.");
+                                    while (true) {
+                                        System.out.println("\n=== User Dashboard ===");
+                                        System.out.println("1. Update Profile");
+                                        System.out.println("2. Logout");
+                                        System.out.print("Enter choice: ");
+                                        String userChoice = scanner.nextLine();
+
+                                        switch (userChoice) {
+                                            case "1":
+                                                loggedUser.updateProfile(scanner);
+                                                break;
+                                            case "2":
+                                                System.out.println("User logged out.");
+                                                break;
+                                            default:
+                                                System.out.println("Invalid choice.");
+                                                break;
+                                        }
+                                    }
                             }
-                        }
-                        break;
+                                break;
+                            }
 
                     case "3":
                         System.out.println("Exiting application.");
@@ -76,6 +100,7 @@ public class Main {
 
                     default:
                         System.out.println("Invalid option. Please try again.");
+                        break;
                 }
             }
     }

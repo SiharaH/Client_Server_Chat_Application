@@ -1,7 +1,7 @@
 package Models;
 
 
-import java.io.File;
+import java.util.Scanner;
 
 public class User {
     protected String email;
@@ -48,6 +48,19 @@ public class User {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public void updateProfile(Scanner scanner) {
+        System.out.print("New Username: ");
+        setUsername(scanner.nextLine());
+        System.out.print("New Password: ");
+        setPassword(scanner.nextLine());
+        System.out.print("New Nick Name: ");
+        setNickname(scanner.nextLine());
+//        System.out.print("New Profile Picture (filename): ");
+//        setProfilePicture(scanner.nextLine());
+
+        System.out.println("Profile updated successfully!");
     }
 
 }
