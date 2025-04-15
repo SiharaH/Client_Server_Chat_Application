@@ -19,7 +19,7 @@ public class Admin extends User {
         }
         return instance;
     }
-
+/*
     public void viewAllUsers(HashMap<String, User> users) {
         System.out.println("\n--- Registered Users ---");
         for (Map.Entry<String, User> entry : users.entrySet()) {
@@ -40,4 +40,5 @@ public class Admin extends User {
             System.out.println("User not found.");
         }
     }
+*/
 }
