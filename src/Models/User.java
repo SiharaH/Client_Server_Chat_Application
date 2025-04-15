@@ -2,6 +2,8 @@ package Models;
 
 
 import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User {
     protected String email;
@@ -9,6 +11,7 @@ public class User {
     protected String password;
     protected String nickname;
     private boolean isAdmin;
+    private Set<String> subscribedChats;
 
     public User(String email, String username, String password, String nickname, boolean isAdmin) {
         this.email = email;
@@ -16,6 +19,7 @@ public class User {
         this.password = password;
         this.nickname = nickname;
         this.isAdmin = isAdmin;
+        this.subscribedChats = new HashSet<>();
     }
 
     public String getEmail() {
@@ -61,6 +65,20 @@ public class User {
 //        setProfilePicture(scanner.nextLine());
 
         System.out.println("Profile updated successfully!");
+    }
+
+    // Subscribe to a chat
+    public void subscribeToChat(String chatId) {
+        subscribedChats.add(chatId);
+    }
+
+    // Unsubscribe from a chat
+    public void unsubscribeFromChat(String chatId) {
+        subscribedChats.remove(chatId);
+    }
+
+    public Set<String> getSubscribedChats() {
+        return subscribedChats;
     }
 
 }

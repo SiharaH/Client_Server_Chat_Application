@@ -1,6 +1,7 @@
 import Models.Admin;
 import Models.User;
 import Services.UserService;
+import Services.ChatManager;
 
 import java.util.Scanner;
 
@@ -44,54 +45,87 @@ public class Main {
                         if (loggedUser != null) {
                             System.out.println("Login successful. Welcome " + loggedUser.getNickname() + "!");
                             if (loggedUser.isAdmin()) {
+                                ChatManager chatManager = ChatManager.getInstance();
+
                                 while (true) {
                                     System.out.println("\n--- Admin Dashboard ---");
                                     System.out.println("1. View Users");
                                     System.out.println("2. Remove User");
                                     System.out.println("3. Update Profile");
+                                    System.out.println("4. Create Chat");
+                                    System.out.println("5. Subscribe Users to Chat");
+                                    System.out.println("6. Unsubscribe User from Chat");
                                     System.out.println("0. Logout");
                                     System.out.print("Enter choice: ");
                                     String adminChoice = scanner.nextLine();
 
-                                    if (adminChoice.equals("1")) {
-                                        userService.printAllUsers();
-                                    } else if (adminChoice.equals("2")) {
-                                        System.out.print("Enter email to remove: ");
-                                        String removeEmail = scanner.nextLine();
-                                        userService.removeUser(removeEmail);
-                                    }
-                                    else if (adminChoice.equals("3")){
-                                        loggedUser.updateProfile(scanner);
-                                    }else if (adminChoice.equals("0")) {
-                                        break;
-                                    } else {
-                                        System.out.println("Invalid choice.");
+                                    switch (adminChoice) {
+                                        case "1":
+                                            userService.printAllUsers();
+                                            break;
+                                        case "2":
+                                            System.out.print("Enter email to remove: ");
+                                            String removeEmail = scanner.nextLine();
+                                            userService.removeUser(removeEmail);
+                                            break;
+                                        case "3":
+                                            loggedUser.updateProfile(scanner);
+                                            break;
+                                        case "4":
+                                            System.out.print("Enter Chat ID to start: ");
+                                            String chatId = scanner.nextLine();
+                                            chatManager.startNewChat(chatId);
+                                            break;
+                                        case "5":
+                                            chatManager.endCurrentChat();
+                                            break;
+                                        case "0":
+                                            System.out.println("Admin logged out.");
+                                            return;
+                                        default:
+                                            System.out.println("Invalid choice.");
+                                            break;
                                     }
                                 }
-                            } else {
-                                System.out.println("You are logged in as a User.");
-                                    while (true) {
-                                        System.out.println("\n=== User Dashboard ===");
-                                        System.out.println("1. Update Profile");
-                                        System.out.println("2. Logout");
-                                        System.out.print("Enter choice: ");
-                                        String userChoice = scanner.nextLine();
 
-                                        switch (userChoice) {
-                                            case "1":
-                                                loggedUser.updateProfile(scanner);
-                                                break;
-                                            case "2":
-                                                System.out.println("User logged out.");
-                                                break;
-                                            default:
-                                                System.out.println("Invalid choice.");
-                                                break;
+                            }
+                            } else {
+                            ChatManager chatManager = ChatManager.getInstance();
+                            chatManager.subscribeUser(loggedUser);
+
+                            while (true) {
+                                System.out.println("\n=== User Dashboard ===");
+                                System.out.println("1. Update Profile");
+                                System.out.println("2. Send Message");
+                                System.out.println("3. Leave Chat & Logout");
+                                System.out.print("Enter choice: ");
+                                String userChoice = scanner.nextLine();
+
+                                switch (userChoice) {
+                                    case "1":
+                                        loggedUser.updateProfile(scanner);
+                                        break;
+                                    case "2":
+                                        if (chatManager.isChatActive()) {
+                                            System.out.print("Enter message: ");
+                                            String message = scanner.nextLine();
+                                            chatManager.sendMessage(loggedUser, message);
+                                        } else {
+                                            System.out.println("No active chat session.");
                                         }
-                                    }
+                                        break;
+                                    case "3":
+                                        chatManager.unsubscribeUser(loggedUser);
+                                        System.out.println("User logged out.");
+                                        break;
+                                    default:
+                                        System.out.println("Invalid choice.");
+                                        break;
+                                }
                             }
-                                break;
-                            }
+
+                        }
+                        break;
 
                     case "3":
                         System.out.println("Exiting application.");
